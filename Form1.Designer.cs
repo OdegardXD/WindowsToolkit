@@ -1,6 +1,6 @@
 ﻿namespace WindowsToolkit
 {
-    partial class Form1
+    partial class MainForm
     {
         /// <summary>
         ///  Required designer variable.
@@ -28,12 +28,122 @@
         /// </summary>
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
+            LogBox = new RichTextBox();
+            panel1 = new Panel();
+            HelpButton = new Button();
+            CheckDiskCheckBox = new CheckBox();
+            DISMCheckBox = new CheckBox();
+            SFCCheckBox = new CheckBox();
+            DeleteTempFilesCheckBox = new CheckBox();
+            RunButton = new Button();
+            panel1.SuspendLayout();
+            SuspendLayout();
+            // 
+            // LogBox
+            // 
+            LogBox.Location = new Point(422, 12);
+            LogBox.Name = "LogBox";
+            LogBox.Size = new Size(379, 426);
+            LogBox.TabIndex = 0;
+            LogBox.Text = "";
+            // 
+            // panel1
+            // 
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(HelpButton);
+            panel1.Controls.Add(CheckDiskCheckBox);
+            panel1.Controls.Add(DISMCheckBox);
+            panel1.Controls.Add(SFCCheckBox);
+            panel1.Controls.Add(DeleteTempFilesCheckBox);
+            panel1.Controls.Add(RunButton);
+            panel1.Location = new Point(12, 12);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(285, 426);
+            panel1.TabIndex = 1;
+            // 
+            // HelpButton
+            // 
+            HelpButton.Location = new Point(3, 398);
+            HelpButton.Name = "HelpButton";
+            HelpButton.Size = new Size(75, 23);
+            HelpButton.TabIndex = 5;
+            HelpButton.Text = "Help!";
+            HelpButton.UseVisualStyleBackColor = true;
+            // 
+            // CheckDiskCheckBox
+            // 
+            CheckDiskCheckBox.AutoSize = true;
+            CheckDiskCheckBox.Location = new Point(3, 78);
+            CheckDiskCheckBox.Name = "CheckDiskCheckBox";
+            CheckDiskCheckBox.Size = new Size(194, 19);
+            CheckDiskCheckBox.TabIndex = 4;
+            CheckDiskCheckBox.Text = "Check Disk (REQUIRES RESTART)";
+            CheckDiskCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // DISMCheckBox
+            // 
+            DISMCheckBox.AutoSize = true;
+            DISMCheckBox.Location = new Point(3, 53);
+            DISMCheckBox.Name = "DISMCheckBox";
+            DISMCheckBox.Size = new Size(134, 19);
+            DISMCheckBox.TabIndex = 3;
+            DISMCheckBox.Text = "DISM Restore Health";
+            DISMCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // SFCCheckBox
+            // 
+            SFCCheckBox.AutoSize = true;
+            SFCCheckBox.Location = new Point(3, 28);
+            SFCCheckBox.Name = "SFCCheckBox";
+            SFCCheckBox.Size = new Size(106, 19);
+            SFCCheckBox.TabIndex = 2;
+            SFCCheckBox.Text = "\"sfc /scannow\"";
+            SFCCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // DeleteTempFilesCheckBox
+            // 
+            DeleteTempFilesCheckBox.AutoSize = true;
+            DeleteTempFilesCheckBox.Location = new Point(3, 3);
+            DeleteTempFilesCheckBox.Name = "DeleteTempFilesCheckBox";
+            DeleteTempFilesCheckBox.Size = new Size(117, 19);
+            DeleteTempFilesCheckBox.TabIndex = 1;
+            DeleteTempFilesCheckBox.Text = "Delete Temp Files";
+            DeleteTempFilesCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // RunButton
+            // 
+            RunButton.Location = new Point(205, 398);
+            RunButton.Name = "RunButton";
+            RunButton.Size = new Size(75, 23);
+            RunButton.TabIndex = 0;
+            RunButton.Text = "Run";
+            RunButton.UseVisualStyleBackColor = true;
+            RunButton.Click += RunButton_Click;
+            // 
+            // MainForm
+            // 
+            AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(800, 450);
-            Text = "Form1";
+            ClientSize = new Size(813, 450);
+            Controls.Add(panel1);
+            Controls.Add(LogBox);
+            Name = "MainForm";
+            Text = "WindowsToolkit";
+            Load += Form1_Load;
+            panel1.ResumeLayout(false);
+            panel1.PerformLayout();
+            ResumeLayout(false);
         }
 
         #endregion
+
+        private RichTextBox LogBox;
+        private Panel panel1;
+        private Button HelpButton;
+        private CheckBox CheckDiskCheckBox;
+        private CheckBox DISMCheckBox;
+        private CheckBox SFCCheckBox;
+        private CheckBox DeleteTempFilesCheckBox;
+        private Button RunButton;
     }
 }
