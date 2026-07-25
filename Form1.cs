@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Net.NetworkInformation;
 using System.Security.Principal;
 
 namespace WindowsToolkit
@@ -14,12 +15,16 @@ namespace WindowsToolkit
         // fix delete if statement
         // fix exit if error occured because i dont think it actually exits now. im unsure
         // fix help button not doing anything
+        // add the path for the temp file directories 
 
 
         private static class GlobalVariables
         {
             public static bool isAdmin; // variable for if program is ran as admin. used in form load
             public static bool isRunning; // check to see if run method is already running. used to prevent user from running method again whilst its already running.
+            public static string PrefetchPath;
+            public static string TempPath;
+            public static string ProcentTempPath;
         }
 
         //
