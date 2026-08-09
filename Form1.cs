@@ -68,7 +68,7 @@ namespace WindowsToolkit
 
         private async void VersionChecker() 
         {
-            AppendLog($"Current Version: v{GlobalVariables.localVersion}");
+            AppendLog($"Current Version: v{GlobalVariables.localVersion}\n");
             var latest = await CheckForUpdate.GetLatestReleaseVersionAsync();
             if (latest != null && latest > GlobalVariables.localVersion)
             {
