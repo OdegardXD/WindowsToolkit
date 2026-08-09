@@ -229,7 +229,8 @@ namespace WindowsToolkit
                             Arguments = "/scannow",
                             UseShellExecute = false,
                             CreateNoWindow = true,
-                            RedirectStandardOutput = true
+                            RedirectStandardOutput = true,
+                            StandardOutputEncoding = System.Text.Encoding.Unicode
                         };
 
                         Process sfcProcess = new Process();
