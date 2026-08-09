@@ -2,8 +2,6 @@
 
 A small Windows Forms utility for common PC maintenance tasks — clearing out junk files and running Windows' built-in repair tools, all from one window.
 
-> **Warning:** This project is very much a work in progress. Expect rough edges.
-
 ## Features
 
 - **Delete Temp Files** — Clears leftover files from `C:\Windows\Temp`, `%Temp%`, and `C:\Windows\Prefetch`.
