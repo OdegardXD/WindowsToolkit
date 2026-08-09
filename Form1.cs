@@ -77,9 +77,50 @@ namespace WindowsToolkit
             else 
             { 
                 GlobalVariables.isRunning = true;
-                if (DeleteTempFilesCheckBox.Checked) // deleting files wont the be same as running programs.
+                if (DeleteTempFilesCheckBox.Checked) // note: all of this is AI slop. i got lazy okay? anyway its simple code. just a foreach block that loops through and catches errors
                 {
                     LogBox.Text += "Started deleting temp files...\n";
+                    LogBox.Text += "1/3 - Temp";
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", SearchOption.AllDirectories))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                            LogBox.Text += $"Deleted: {file}\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                        }
+                    }
+                    LogBox.Text += "2/3 - %Temp%";
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", SearchOption.AllDirectories))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                            LogBox.Text += $"Deleted: {file}\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                        }
+                    }
+                    LogBox.Text += "3/3 - Prefetch";
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", SearchOption.AllDirectories))
+                    {
+                        try
+                        {
+                            File.Delete(file);
+                            LogBox.Text += $"Deleted: {file}\n";
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                        }
+                    }
+                    LogBox.Text += "Done Deleting Temp Files.";
+
                 }
                 if (SFCCheckBox.Checked)
                 {
