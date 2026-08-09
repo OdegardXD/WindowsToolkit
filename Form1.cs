@@ -80,7 +80,7 @@ namespace WindowsToolkit
                 if (DeleteTempFilesCheckBox.Checked) // note: all of this is AI slop. i got lazy okay? anyway its simple code. just a foreach block that loops through and catches errors
                 {
                     LogBox.Text += "Started deleting temp files...\n";
-                    LogBox.Text += "1/3 - Temp";
+                    LogBox.Text += "1/3 - Temp\n";
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", SearchOption.AllDirectories))
                     {
                         try
@@ -93,7 +93,7 @@ namespace WindowsToolkit
                             LogBox.Text += $"Failed: {file} - {ex.Message}\n";
                         }
                     }
-                    LogBox.Text += "2/3 - %Temp%";
+                    LogBox.Text += "2/3 - %Temp%\n";
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", SearchOption.AllDirectories))
                     {
                         try
@@ -106,7 +106,7 @@ namespace WindowsToolkit
                             LogBox.Text += $"Failed: {file} - {ex.Message}\n";
                         }
                     }
-                    LogBox.Text += "3/3 - Prefetch";
+                    LogBox.Text += "3/3 - Prefetch\n";
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", SearchOption.AllDirectories))
                     {
                         try
@@ -119,7 +119,7 @@ namespace WindowsToolkit
                             LogBox.Text += $"Failed: {file} - {ex.Message}\n";
                         }
                     }
-                    LogBox.Text += "Done Deleting Temp Files.";
+                    LogBox.Text += "Done Deleting Temp Files.\n";
 
                 }
                 if (SFCCheckBox.Checked)
