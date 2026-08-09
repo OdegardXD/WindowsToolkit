@@ -30,6 +30,7 @@
         {
             LogBox = new RichTextBox();
             panel1 = new Panel();
+            ClearLogBox = new Button();
             DISMCleanupCheckBox = new CheckBox();
             HelpButton = new Button();
             CheckDiskCheckBox = new CheckBox();
@@ -37,7 +38,6 @@
             SFCCheckBox = new CheckBox();
             DeleteTempFilesCheckBox = new CheckBox();
             RunButton = new Button();
-            ClearLogBox = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -67,6 +67,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(285, 426);
             panel1.TabIndex = 1;
+            // 
+            // ClearLogBox
+            // 
+            ClearLogBox.Location = new Point(84, 398);
+            ClearLogBox.Name = "ClearLogBox";
+            ClearLogBox.Size = new Size(75, 23);
+            ClearLogBox.TabIndex = 7;
+            ClearLogBox.Text = "Clear Log";
+            ClearLogBox.UseVisualStyleBackColor = true;
+            ClearLogBox.Click += ClearLogBox_Click;
             // 
             // DISMCleanupCheckBox
             // 
@@ -139,16 +149,6 @@
             RunButton.UseVisualStyleBackColor = true;
             RunButton.Click += RunButton_Click;
             // 
-            // ClearLogBox
-            // 
-            ClearLogBox.Location = new Point(84, 398);
-            ClearLogBox.Name = "ClearLogBox";
-            ClearLogBox.Size = new Size(75, 23);
-            ClearLogBox.TabIndex = 7;
-            ClearLogBox.Text = "Clear Log";
-            ClearLogBox.UseVisualStyleBackColor = true;
-            ClearLogBox.Click += ClearLogBox_Click;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -159,6 +159,7 @@
             MaximizeBox = false;
             MinimumSize = new Size(829, 489);
             Name = "MainForm";
+            ShowIcon = false;
             Text = "WindowsToolkit";
             Load += Form1_Load;
             panel1.ResumeLayout(false);
