@@ -42,10 +42,12 @@
             // 
             // LogBox
             // 
-            LogBox.Location = new Point(422, 12);
+            LogBox.Location = new Point(303, 12);
+            LogBox.MaximumSize = new Size(592, 426);
+            LogBox.MinimumSize = new Size(592, 426);
             LogBox.Name = "LogBox";
             LogBox.ReadOnly = true;
-            LogBox.Size = new Size(379, 426);
+            LogBox.Size = new Size(592, 426);
             LogBox.TabIndex = 0;
             LogBox.Text = "";
             // 
@@ -139,11 +141,10 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(813, 450);
+            ClientSize = new Size(907, 450);
             Controls.Add(panel1);
             Controls.Add(LogBox);
             MaximizeBox = false;
-            MaximumSize = new Size(829, 489);
             MinimumSize = new Size(829, 489);
             Name = "MainForm";
             Text = "WindowsToolkit";
