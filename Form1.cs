@@ -11,6 +11,11 @@ namespace WindowsToolkit
             InitializeComponent();
         }
 
+        // future ideas?
+        // add a windows update cleanup. might be a bad idea due to it fucking with windows update
+        // icon cache cleanup?
+
+
         // todo:
         // fix delete if statement
         // fix exit if error occured because i dont think it actually exits now. im unsure
@@ -25,7 +30,7 @@ namespace WindowsToolkit
             public static bool isRunning; // check to see if run method is already running. used to prevent user from running method again whilst its already running.
             public static string PrefetchPath = "C:\\Windows\\Prefetch";
             public static string TempPath = "C:\\Windows\\Temp";
-            public static string ProcentTempPath = $"C:\\Users\\{WindowsUsername}\\AppData\\Local\\Temp";
+            public static string PercentTempPath = $"C:\\Users\\{WindowsUsername}\\AppData\\Local\\Temp";
         }
 
         //
