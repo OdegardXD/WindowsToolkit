@@ -11,12 +11,6 @@ namespace WindowsToolkit
             InitializeComponent();
         }
 
-        // future ideas?
-        // add a windows update cleanup. might be a bad idea due to it fucking with windows update
-
-        // bugs:
-        // if any of the options throw an error and return;'s then it will stop which is the way its designed but IsRunning; never gets set to false. so to retry you would need to restart program...
-
         private static class GlobalVariables
         {
             public static string WindowsUsername = Environment.UserName;
