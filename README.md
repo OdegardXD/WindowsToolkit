@@ -2,34 +2,35 @@
 
 A small Windows Forms utility for common PC maintenance tasks — clearing out junk files and running Windows' built-in repair tools, all from one window.
 
-> **Warning:** This project is very much a work in progress. Expect rough edges.
-
 ## Features
 
 - **Delete Temp Files** — Clears leftover files from `C:\Windows\Temp`, `%Temp%`, and `C:\Windows\Prefetch`.
-- **DISM** — Runs `DISM /Online /Cleanup-Image /RestoreHealth` to repair the Windows system image.
+- **DISM Restore Health** — Runs `DISM /Online /Cleanup-Image /RestoreHealth` to repair the Windows system image.
 - **SFC** — Runs `sfc /scannow` to check for and replace corrupted system files.
+- **DISM Component Cleanup** — Runs `DISM /Online /Cleanup-Image /StartComponentCleanup` to remove old, superseded component versions that pile up in the component store after Windows updates, freeing up space without touching anything currently in use.
 - **CHKDSK** — Runs `chkdsk C: /f` to scan the disk for errors. Requires a restart to complete, and you'll be warned before it's queued.
 
 Check any combination of the boxes above and hit **Run** to execute them in sequence. Use the **Help** button in-app for a quick explanation of each option.
 
 ## How it works
 
-The app is a single-window WinForms UI (`MainForm` in `Form1.cs`) with a checkbox for each feature, a **Run** button, a **Help** button, and a log panel on the right that prints progress as plain text.
+The app is a single-window WinForms UI (`MainForm` in `Form1.cs`) with a checkbox for each feature, a **Run** button, a **Help** button, and a read-only log panel on the right that prints progress as plain text and auto-scrolls to the latest line as it comes in.
 
 1. **Startup / elevation check** — On load, the app checks whether it's running as Administrator (`WindowsPrincipal.IsInRole`). If not, it shows a message box and exits; every feature here needs admin rights, so there's no non-admin fallback.
-2. **CHKDSK confirmation** — Checking the "Check Disk" box immediately pops a warning that CHKDSK requires a full restart, since scheduling it is a bigger commitment than the other options. Clicking "No" unchecks the box.
-3. **Run button** — Clicking **Run**:
+2. **Version check** — Also on load, the app reads its own assembly version and compares it against the latest GitHub release tag (via `CheckForUpdate.GetLatestReleaseVersionAsync()`), logging a heads-up if a newer version is available.
+3. **CHKDSK confirmation** — Checking the "Check Disk" box immediately pops a warning that CHKDSK requires a full restart, since scheduling it is a bigger commitment than the other options. Clicking "No" unchecks the box.
+4. **Run button** — Clicking **Run**:
    - Refuses to run if no checkboxes are selected.
    - Refuses to run again if a run is already in progress (`isRunning` guard), so you can't queue overlapping jobs.
    - Otherwise runs each selected task **in a fixed order**, not the order you checked them:
      1. **Delete Temp Files** — enumerates and deletes files in `C:\Windows\Temp`, `%Temp%`, and `C:\Windows\Prefetch`. Each file delete is wrapped in its own try/catch so one locked/inaccessible file just gets logged and skipped instead of aborting the whole cleanup.
-     2. **DISM** (`dism.exe /Online /Cleanup-Image /RestoreHealth`)
+     2. **DISM Restore Health** (`dism.exe /Online /Cleanup-Image /RestoreHealth`)
      3. **SFC** (`sfc.exe /scannow`)
-     4. **CHKDSK** (`chkdsk.exe C: /f`) — this one needs interactive confirmation, so the app writes `"Y"` to the process's standard input to auto-confirm scheduling the check at next restart.
-   - DISM intentionally runs before SFC: SFC verifies files against the local component store, and DISM is what repairs that store, so running DISM first means SFC has good data to check against.
-   - Each external tool's stdout is streamed line-by-line into the log box in real time via `OutputDataReceived`.
-4. **Help button** — Just shows a static message box summarizing what each checkbox does; it doesn't reflect current state.
+     4. **DISM Component Cleanup** (`dism.exe /Online /Cleanup-Image /StartComponentCleanup`)
+     5. **CHKDSK** (`chkdsk.exe C: /f`) — this one needs interactive confirmation, so the app writes `"Y"` to the process's standard input to auto-confirm scheduling the check at next restart.
+   - The order matters: DISM Restore Health runs before SFC because SFC verifies files against the local component store, and DISM is what repairs that store — so running DISM first means SFC has good data to check against. Component Cleanup runs after both repairs, once the store is confirmed healthy, so it's only ever trimming superseded versions that are safe to remove.
+   - Each external tool's stdout is streamed line-by-line into the log box in real time via `OutputDataReceived`. SFC's output is decoded as Unicode specifically, since `sfc.exe` writes UTF-16 to redirected output unlike the other tools here.
+5. **Help button** — Just shows a static message box summarizing what each checkbox does; it doesn't reflect current state.
 
 **Known issue (see comments in `Form1.cs`):** if DISM, SFC, or CHKDSK throws an exception, the handler logs it and `return`s early — but that skips the line that resets `isRunning` back to `false`. The app has to be restarted to run anything again after a failure like that.
 
