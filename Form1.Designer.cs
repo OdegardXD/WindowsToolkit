@@ -30,6 +30,7 @@
         {
             LogBox = new RichTextBox();
             panel1 = new Panel();
+            DISMCleanupCheckBox = new CheckBox();
             HelpButton = new Button();
             CheckDiskCheckBox = new CheckBox();
             DISMCheckBox = new CheckBox();
@@ -51,6 +52,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(DISMCleanupCheckBox);
             panel1.Controls.Add(HelpButton);
             panel1.Controls.Add(CheckDiskCheckBox);
             panel1.Controls.Add(DISMCheckBox);
@@ -61,6 +63,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(285, 426);
             panel1.TabIndex = 1;
+            // 
+            // DISMCleanupCheckBox
+            // 
+            DISMCleanupCheckBox.AutoSize = true;
+            DISMCleanupCheckBox.Location = new Point(3, 78);
+            DISMCleanupCheckBox.Name = "DISMCleanupCheckBox";
+            DISMCleanupCheckBox.Size = new Size(168, 19);
+            DISMCleanupCheckBox.TabIndex = 6;
+            DISMCleanupCheckBox.Text = "DISM Component Cleanup";
+            DISMCleanupCheckBox.UseVisualStyleBackColor = true;
             // 
             // HelpButton
             // 
@@ -75,7 +87,7 @@
             // CheckDiskCheckBox
             // 
             CheckDiskCheckBox.AutoSize = true;
-            CheckDiskCheckBox.Location = new Point(3, 78);
+            CheckDiskCheckBox.Location = new Point(3, 103);
             CheckDiskCheckBox.Name = "CheckDiskCheckBox";
             CheckDiskCheckBox.Size = new Size(194, 19);
             CheckDiskCheckBox.TabIndex = 4;
@@ -151,5 +163,6 @@
         private CheckBox SFCCheckBox;
         private CheckBox DeleteTempFilesCheckBox;
         private Button RunButton;
+        private CheckBox DISMCleanupCheckBox;
     }
 }

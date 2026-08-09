@@ -13,7 +13,6 @@ namespace WindowsToolkit
 
         // future ideas?
         // add a windows update cleanup. might be a bad idea due to it fucking with windows update
-        // implement version checker. stores current github commit version and compares against github
 
         // bugs:
         // if any of the options throw an error and return;'s then it will stop which is the way its designed but IsRunning; never gets set to false. so to retry you would need to restart program...
@@ -109,7 +108,7 @@ namespace WindowsToolkit
 
         private async void RunButton_Click(object sender, EventArgs e)
         {
-            if (!DeleteTempFilesCheckBox.Checked && !DISMCheckBox.Checked && !SFCCheckBox.Checked && !CheckDiskCheckBox.Checked)
+            if (!DeleteTempFilesCheckBox.Checked && !DISMCheckBox.Checked && !SFCCheckBox.Checked && !DISMCleanupCheckBox.Checked && !CheckDiskCheckBox.Checked)
             {
                 MessageBox.Show("Please select a option before trying to run...", "Error!");
                 return;
@@ -175,12 +174,12 @@ namespace WindowsToolkit
                     AppendLog("Done Deleting Temp Files.\n");
                 }
 
-                // -- dism --
+                // -- dism restore health --
 
                 if (DISMCheckBox.Checked)
                 {
                     // log about starting command
-                    AppendLog("Starting 'DISM'\n");
+                    AppendLog("Starting 'DISM Restore Health'\n");
                     try
                     {
                         // declare the variable and build the object
@@ -255,6 +254,46 @@ namespace WindowsToolkit
                     }
                 }
 
+                // -- dism cleanup --
+
+                if (DISMCleanupCheckBox.Checked)
+                {
+                    // log about starting command
+                    AppendLog("Starting 'DISM Cleanup'\n");
+                    try
+                    {
+                        // declare the variable and build the object
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = "dism.exe",
+                            Arguments = "/Online /Cleanup-Image /StartComponentCleanup",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true
+                        };
+
+                        Process DISMCleanupProcess = new Process();
+                        DISMCleanupProcess.StartInfo = startInfo;
+
+                        DISMCleanupProcess.OutputDataReceived += (sender1, e1) =>
+                        {
+                            if (e1.Data != null)
+                            {
+                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                            }
+                        };
+
+                        DISMCleanupProcess.Start();
+                        DISMCleanupProcess.BeginOutputReadLine();
+                        await DISMCleanupProcess.WaitForExitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
+                        return;
+                    }
+                }
+
                 // -- chkdsk --
 
                 if (CheckDiskCheckBox.Checked) // chkdsk requires interaction. has a "writeline" line that sends "Y" to confirm to do chkdsk at restart
@@ -309,7 +348,12 @@ namespace WindowsToolkit
 
         private void HelpButton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Windows Toolkit, Made by OdegardXD\n\nDelete Temp Files - Deletes some unnecessary leftover files.\nSpecifically the folders are 'Temp', '%Temp%' and 'Prefetch'\nPrograms use these folders to dump temporary files and its not always that they delete them so the folders can take up space over time.\n\nsfc /scannow\nThis is a built in Windows tool that scans all Windows system files and compares them against a known good copy to check if any are broken/corrupted and then replaces them if they are.\n\nDISM\nDISM repairs the underlying Windows System image itself.\n\nCHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure", "Help - Windows Toolkit");
+            MessageBox.Show("Windows Toolkit, Made by OdegardXD\n\n" +
+                "Delete Temp Files - Deletes some unnecessary leftover files.\nSpecifically the folders are 'Temp', '%Temp%' and 'Prefetch'\nPrograms use these folders to dump temporary files and its not always that they delete them so the folders can take up space over time.\n\n" +
+                "DISM Restore Health\nDISM repairs the underlying Windows System image itself.\n\n" +
+                "sfc /scannow\nThis is a built in Windows tool that scans all Windows system files and compares them against a known good copy to check if any are broken/corrupted and then replaces them if they are.\n\n" +
+                "DISM Component Cleanup\nRemoves old, superseded versions of system components that pile up in the component store after Windows updates, freeing up space without touching anything currently in use.\n\n" +
+                "CHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure", "Help - Windows Toolkit");
         }
     }
 }
