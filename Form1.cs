@@ -41,6 +41,8 @@ namespace WindowsToolkit
             // .IsInRole(WindowsBuiltInRole.Administrator) checks if the user that WindowsIdentity.GetCurrent() returned is a administrator
             // this lets us find out if the user that ran the program has admin privileges
 
+            // future ode here: what the fuck is this slop
+
             // now for the if statements to either relaunch as admin or just close.
             if (!GlobalVariables.isAdmin)
             {
