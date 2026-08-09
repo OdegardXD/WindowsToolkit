@@ -37,6 +37,7 @@
             SFCCheckBox = new CheckBox();
             DeleteTempFilesCheckBox = new CheckBox();
             RunButton = new Button();
+            ClearLogBox = new Button();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -54,6 +55,7 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(ClearLogBox);
             panel1.Controls.Add(DISMCleanupCheckBox);
             panel1.Controls.Add(HelpButton);
             panel1.Controls.Add(CheckDiskCheckBox);
@@ -137,6 +139,16 @@
             RunButton.UseVisualStyleBackColor = true;
             RunButton.Click += RunButton_Click;
             // 
+            // ClearLogBox
+            // 
+            ClearLogBox.Location = new Point(84, 398);
+            ClearLogBox.Name = "ClearLogBox";
+            ClearLogBox.Size = new Size(75, 23);
+            ClearLogBox.TabIndex = 7;
+            ClearLogBox.Text = "Clear Log";
+            ClearLogBox.UseVisualStyleBackColor = true;
+            ClearLogBox.Click += ClearLogBox_Click;
+            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -165,5 +177,6 @@
         private CheckBox DeleteTempFilesCheckBox;
         private Button RunButton;
         private CheckBox DISMCleanupCheckBox;
+        private Button ClearLogBox;
     }
 }

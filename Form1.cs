@@ -65,7 +65,7 @@ namespace WindowsToolkit
         // VersionChecker
         //
 
-        private async void VersionChecker() 
+        private async void VersionChecker()
         {
             AppendLog($"Current Version: v{GlobalVariables.localVersion}\n");
             var latest = await CheckForUpdate.GetLatestReleaseVersionAsync();
@@ -92,7 +92,7 @@ namespace WindowsToolkit
 
         private void CHKDSK_Restart_warn(object sender, EventArgs e)
         {
-            if (CheckDiskCheckBox.Checked) 
+            if (CheckDiskCheckBox.Checked)
             {
                 DialogResult result = MessageBox.Show("Warning! CHKDSK requires a full PC restart. Press no to unselect, yes to proceed.", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (result == DialogResult.No)
@@ -213,7 +213,7 @@ namespace WindowsToolkit
                         return;
                     }
                 }
-                
+
                 // -- sfc --
 
                 if (SFCCheckBox.Checked)
@@ -355,6 +355,15 @@ namespace WindowsToolkit
                 "sfc /scannow\nThis is a built in Windows tool that scans all Windows system files and compares them against a known good copy to check if any are broken/corrupted and then replaces them if they are.\n\n" +
                 "DISM Component Cleanup\nRemoves old, superseded versions of system components that pile up in the component store after Windows updates, freeing up space without touching anything currently in use.\n\n" +
                 "CHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure", "Help - Windows Toolkit");
+        }
+
+        //
+        // Clear Log Box
+        //
+
+        private void ClearLogBox_Click(object sender, EventArgs e)
+        {
+            LogBox.Text = string.Empty;
         }
     }
 }
