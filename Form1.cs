@@ -56,9 +56,9 @@ namespace WindowsToolkit
 
             else
             {
-                LogBox.Text += "Program started.\n";
+                AppendLog("Program started.\n");
             }
-            LogBox.Text += $"Got Windows Username: {GlobalVariables.WindowsUsername}\n";
+            AppendLog($"Got Windows Username: {GlobalVariables.WindowsUsername}\n");
             VersionChecker();
         }
 
@@ -68,11 +68,11 @@ namespace WindowsToolkit
 
         private async void VersionChecker() 
         {
-            LogBox.Text += $"Current Version: v{GlobalVariables.localVersion}";
+            AppendLog($"Current Version: v{GlobalVariables.localVersion}");
             var latest = await CheckForUpdate.GetLatestReleaseVersionAsync();
             if (latest != null && latest > GlobalVariables.localVersion)
             {
-                LogBox.Text += $"Update available: v{latest} (you're on v{GlobalVariables.localVersion})\n";
+                AppendLog($"Update available: v{latest} (you're on v{GlobalVariables.localVersion})\n");
             }
         }
 
@@ -132,47 +132,47 @@ namespace WindowsToolkit
                         IgnoreInaccessible = true
                     };
 
-                    LogBox.Text += "Started deleting temp files...\n";
-                    LogBox.Text += "1/3 - Temp\n";
+                    AppendLog("Started deleting temp files...\n");
+                    AppendLog("1/3 - Temp\n");
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", enumOptions))
                     {
                         try
                         {
                             File.Delete(file);
-                            LogBox.Text += $"Deleted: {file}\n";
+                            AppendLog($"Deleted: {file}\n");
                         }
                         catch (Exception ex)
                         {
-                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                            AppendLog($"Failed: {file} - {ex.Message}\n");
                         }
                     }
-                    LogBox.Text += "2/3 - %Temp%\n";
+                    AppendLog("2/3 - %Temp%\n");
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", enumOptions))
                     {
                         try
                         {
                             File.Delete(file);
-                            LogBox.Text += $"Deleted: {file}\n";
+                            AppendLog($"Deleted: {file}\n");
                         }
                         catch (Exception ex)
                         {
-                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                            AppendLog($"Failed: {file} - {ex.Message}\n");
                         }
                     }
-                    LogBox.Text += "3/3 - Prefetch\n";
+                    AppendLog("3/3 - Prefetch\n");
                     foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", enumOptions))
                     {
                         try
                         {
                             File.Delete(file);
-                            LogBox.Text += $"Deleted: {file}\n";
+                            AppendLog($"Deleted: {file}\n");
                         }
                         catch (Exception ex)
                         {
-                            LogBox.Text += $"Failed: {file} - {ex.Message}\n";
+                            AppendLog($"Failed: {file} - {ex.Message}\n");
                         }
                     }
-                    LogBox.Text += "Done Deleting Temp Files.\n";
+                    AppendLog("Done Deleting Temp Files.\n");
                 }
 
                 // -- dism --
@@ -180,7 +180,7 @@ namespace WindowsToolkit
                 if (DISMCheckBox.Checked)
                 {
                     // log about starting command
-                    LogBox.Text += "Starting 'DISM'\n";
+                    AppendLog("Starting 'DISM'\n");
                     try
                     {
                         // declare the variable and build the object
@@ -200,7 +200,7 @@ namespace WindowsToolkit
                         {
                             if (e1.Data != null)
                             {
-                                LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
+                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
                             }
                         };
 
@@ -210,7 +210,7 @@ namespace WindowsToolkit
                     }
                     catch (Exception ex)
                     {
-                        LogBox.Invoke(() => LogBox.Text += "DISM failed to run: " + ex.Message + "\n");
+                        LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
                         return;
                     }
                 }
@@ -220,7 +220,7 @@ namespace WindowsToolkit
                 if (SFCCheckBox.Checked)
                 {
                     // log about starting command
-                    LogBox.Text += "Starting 'sfc /scannow'\n";
+                    AppendLog("Starting 'sfc /scannow'\n");
                     try
                     {
                         // declare the variable and build the object
@@ -240,7 +240,7 @@ namespace WindowsToolkit
                         {
                             if (e1.Data != null)
                             {
-                                LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
+                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
                             }
                         };
 
@@ -250,7 +250,7 @@ namespace WindowsToolkit
                     }
                     catch (Exception ex)
                     {
-                        LogBox.Invoke(() => LogBox.Text += "SFC failed to run: " + ex.Message + "\n");
+                        LogBox.Invoke(() => AppendLog("SFC failed to run: " + ex.Message + "\n"));
                         return;
                     }
                 }
@@ -260,7 +260,7 @@ namespace WindowsToolkit
                 if (CheckDiskCheckBox.Checked) // chkdsk requires interaction. has a "writeline" line that sends "Y" to confirm to do chkdsk at restart
                 {
                     // log about starting command
-                    LogBox.Text += "Starting 'CHKDSK'\n";
+                    AppendLog("Starting 'CHKDSK'\n");
                     try
                     {
                         // declare the variable and build the object
@@ -281,7 +281,7 @@ namespace WindowsToolkit
                         {
                             if (e1.Data != null)
                             {
-                                LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
+                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
                             }
                         };
 
@@ -293,13 +293,13 @@ namespace WindowsToolkit
                     }
                     catch (Exception ex)
                     {
-                        LogBox.Invoke(() => LogBox.Text += "CHKDSK failed to run: " + ex.Message + "\n");
+                        LogBox.Invoke(() => AppendLog("CHKDSK failed to run: " + ex.Message + "\n"));
                         return;
                     }
                 }
 
                 GlobalVariables.isRunning = false;
-                LogBox.Text += "Finished!\n";
+                AppendLog("Finished!\n");
             }
         }
 
