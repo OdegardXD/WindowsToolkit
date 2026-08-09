@@ -14,11 +14,12 @@ namespace WindowsToolkit
         // future ideas?
         // add a windows update cleanup. might be a bad idea due to it fucking with windows update
         // icon cache cleanup?
+        // Reorder commands. DISM fixes component store that SFC /scannow uses so best to run that first if user wants to run that
+        // implement version checker. stores current github commit version and compares against github
 
 
         // todo:
         // fix exit if error occured because i dont think it actually exits now. im unsure
-        // fix help button not doing anything
 
 
         private static class GlobalVariables
@@ -68,12 +69,12 @@ namespace WindowsToolkit
 
         private async void RunButton_Click(object sender, EventArgs e)
         {
-            if (GlobalVariables.isRunning) 
+            if (GlobalVariables.isRunning)
             {
                 MessageBox.Show("Toolkit is already doing its magic! Wait u dingus!", "Error!");
             }
-            else 
-            { 
+            else
+            {
                 GlobalVariables.isRunning = true;
 
                 // -- delete temp files --
@@ -135,7 +136,8 @@ namespace WindowsToolkit
                 {
                     // log about starting command
                     LogBox.Text += "Starting 'sfc /scannow'\n";
-                    try { 
+                    try
+                    {
                         // declare the variable and build the object
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
@@ -145,10 +147,10 @@ namespace WindowsToolkit
                             CreateNoWindow = true,
                             RedirectStandardOutput = true
                         };
-        
+
                         Process sfcProcess = new Process();
                         sfcProcess.StartInfo = startInfo;
-        
+
                         sfcProcess.OutputDataReceived += (sender1, e1) =>
                         {
                             if (e1.Data != null)
@@ -156,7 +158,7 @@ namespace WindowsToolkit
                                 LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
                             }
                         };
-        
+
                         sfcProcess.Start();
                         sfcProcess.BeginOutputReadLine();
                         await sfcProcess.WaitForExitAsync();
@@ -174,7 +176,8 @@ namespace WindowsToolkit
                 {
                     // log about starting command
                     LogBox.Text += "Starting 'DISM'\n";
-                    try { 
+                    try
+                    {
                         // declare the variable and build the object
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
@@ -184,10 +187,10 @@ namespace WindowsToolkit
                             CreateNoWindow = true,
                             RedirectStandardOutput = true
                         };
-    
+
                         Process DISMProcess = new Process();
                         DISMProcess.StartInfo = startInfo;
-    
+
                         DISMProcess.OutputDataReceived += (sender1, e1) =>
                         {
                             if (e1.Data != null)
@@ -195,7 +198,7 @@ namespace WindowsToolkit
                                 LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
                             }
                         };
-    
+
                         DISMProcess.Start();
                         DISMProcess.BeginOutputReadLine();
                         await DISMProcess.WaitForExitAsync();
@@ -213,7 +216,8 @@ namespace WindowsToolkit
                 {
                     // log about starting command
                     LogBox.Text += "Starting 'CHKDSK'\n";
-                    try { 
+                    try
+                    {
                         // declare the variable and build the object
                         ProcessStartInfo startInfo = new ProcessStartInfo
                         {
@@ -224,10 +228,10 @@ namespace WindowsToolkit
                             RedirectStandardOutput = true,
                             RedirectStandardInput = true // this is also new. needed to send input
                         };
-    
+
                         Process chkdskProcess = new Process();
                         chkdskProcess.StartInfo = startInfo;
-        
+
                         chkdskProcess.OutputDataReceived += (sender1, e1) =>
                         {
                             if (e1.Data != null)
@@ -235,10 +239,10 @@ namespace WindowsToolkit
                                 LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
                             }
                         };
-    
+
                         chkdskProcess.Start();
                         chkdskProcess.BeginOutputReadLine();
-    
+
                         chkdskProcess.StandardInput.WriteLine("Y");
                         await chkdskProcess.WaitForExitAsync();
                     }
@@ -252,6 +256,11 @@ namespace WindowsToolkit
                 GlobalVariables.isRunning = false;
                 LogBox.Text += "Finished!";
             }
+        }
+
+        private void HelpButton_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("Windows Toolkit, Made by OdegardXD\n\nDelete Temp Files - Deletes some unnecessary leftover files.\nSpecifically the folders are 'Temp', '%Temp%' and 'Prefetch'\nPrograms use these folders to dump temporary files and its not always that they delete them so the folders can take up space over time.\n\nsfc /scannow\nThis is a built in Windows tool that scans all Windows system files and compares them against a known good copy to check if any are broken/corrupted and then replaces them if they are.\n\nDISM\nDISM repairs the underlying Windows System image itself.\n\nCHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure", "Help - Windows Toolkit");
         }
     }
 }

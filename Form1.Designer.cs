@@ -69,6 +69,7 @@
             HelpButton.TabIndex = 5;
             HelpButton.Text = "Help!";
             HelpButton.UseVisualStyleBackColor = true;
+            HelpButton.Click += HelpButton_Click;
             // 
             // CheckDiskCheckBox
             // 
