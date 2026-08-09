@@ -20,11 +20,12 @@ namespace WindowsToolkit
 
         private static class GlobalVariables
         {
+            public static string WindowsUsername = Environment.UserName;
             public static bool isAdmin; // variable for if program is ran as admin. used in form load
             public static bool isRunning; // check to see if run method is already running. used to prevent user from running method again whilst its already running.
-            public static string PrefetchPath;
-            public static string TempPath;
-            public static string ProcentTempPath;
+            public static string PrefetchPath = "C:\\Windows\\Prefetch";
+            public static string TempPath = "C:\\Windows\\Temp";
+            public static string ProcentTempPath = $"C:\\Users\\{WindowsUsername}\\AppData\\Local\\Temp";
         }
 
         //
@@ -53,7 +54,7 @@ namespace WindowsToolkit
             {
                 LogBox.Text += "Program started.\n";
             }
-
+            LogBox.Text += $"Got Windows Username: {GlobalVariables.WindowsUsername}\n";
         }
 
         //
@@ -71,7 +72,7 @@ namespace WindowsToolkit
                 GlobalVariables.isRunning = true;
                 if (DeleteTempFilesCheckBox.Checked) // deleting files wont the be same as running programs.
                 {
-    
+                    LogBox.Text += "Started deleting temp files...\n";
                 }
                 if (SFCCheckBox.Checked)
                 {
