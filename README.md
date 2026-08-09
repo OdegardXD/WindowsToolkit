@@ -1,4 +1,4 @@
-# WindowsToolkit - Made by OdegardXD
+# WindowsToolkit
 
 ## WARNING!!! This utility is VERYYYY WIP
 
