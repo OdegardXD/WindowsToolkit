@@ -43,6 +43,7 @@
             // 
             LogBox.Location = new Point(422, 12);
             LogBox.Name = "LogBox";
+            LogBox.ReadOnly = true;
             LogBox.Size = new Size(379, 426);
             LogBox.TabIndex = 0;
             LogBox.Text = "";
@@ -129,6 +130,9 @@
             ClientSize = new Size(813, 450);
             Controls.Add(panel1);
             Controls.Add(LogBox);
+            MaximizeBox = false;
+            MaximumSize = new Size(829, 489);
+            MinimumSize = new Size(829, 489);
             Name = "MainForm";
             Text = "WindowsToolkit";
             Load += Form1_Load;

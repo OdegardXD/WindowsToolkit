@@ -59,15 +59,32 @@ namespace WindowsToolkit
                 LogBox.Text += "Program started.\n";
             }
             LogBox.Text += $"Got Windows Username: {GlobalVariables.WindowsUsername}\n";
+            VersionChecker();
         }
 
-        private async void VersionChecker(object sender, EventArgs e) 
+        //
+        // VersionChecker
+        //
+
+        private async void VersionChecker() 
         {
+            LogBox.Text += $"Current Version: v{GlobalVariables.localVersion}";
             var latest = await CheckForUpdate.GetLatestReleaseVersionAsync();
             if (latest != null && latest > GlobalVariables.localVersion)
             {
                 LogBox.Text += $"Update available: v{latest} (you're on v{GlobalVariables.localVersion})\n";
             }
+        }
+
+        //
+        // Append Log
+        //
+
+        private void AppendLog(string text)
+        {
+            LogBox.AppendText(text);
+            LogBox.SelectionStart = LogBox.Text.Length;
+            LogBox.ScrollToCaret();
         }
 
         //
@@ -282,7 +299,7 @@ namespace WindowsToolkit
                 }
 
                 GlobalVariables.isRunning = false;
-                LogBox.Text += "Finished!";
+                LogBox.Text += "Finished!\n";
             }
         }
 
