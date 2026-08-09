@@ -77,11 +77,20 @@ namespace WindowsToolkit
             else 
             { 
                 GlobalVariables.isRunning = true;
+
+                // -- delete temp files --
+
                 if (DeleteTempFilesCheckBox.Checked) // note: all of this is AI slop. i got lazy okay? anyway its simple code. just a foreach block that loops through and catches errors
                 {
+                    var enumOptions = new EnumerationOptions
+                    {
+                        RecurseSubdirectories = true,
+                        IgnoreInaccessible = true
+                    };
+
                     LogBox.Text += "Started deleting temp files...\n";
                     LogBox.Text += "1/3 - Temp\n";
-                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", SearchOption.AllDirectories))
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", enumOptions))
                     {
                         try
                         {
@@ -94,7 +103,7 @@ namespace WindowsToolkit
                         }
                     }
                     LogBox.Text += "2/3 - %Temp%\n";
-                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", SearchOption.AllDirectories))
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", enumOptions))
                     {
                         try
                         {
@@ -107,7 +116,7 @@ namespace WindowsToolkit
                         }
                     }
                     LogBox.Text += "3/3 - Prefetch\n";
-                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", SearchOption.AllDirectories))
+                    foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", enumOptions))
                     {
                         try
                         {
@@ -120,8 +129,10 @@ namespace WindowsToolkit
                         }
                     }
                     LogBox.Text += "Done Deleting Temp Files.\n";
-
                 }
+
+                // -- sfc --
+
                 if (SFCCheckBox.Checked)
                 {
                     // log about starting command
@@ -158,6 +169,9 @@ namespace WindowsToolkit
                         return;
                     }
                 }
+
+                // -- dism --
+
                 if (DISMCheckBox.Checked)
                 {
                     // log about starting command
@@ -194,6 +208,9 @@ namespace WindowsToolkit
                         return;
                     }
                 }
+
+                // -- chkdsk --
+
                 if (CheckDiskCheckBox.Checked) // chkdsk requires interaction. has a "writeline" line that sends "Y" to confirm to do chkdsk at restart
                 {
                     // log about starting command
@@ -233,6 +250,7 @@ namespace WindowsToolkit
                         return;
                     }
                 }
+
                 GlobalVariables.isRunning = false;
                 LogBox.Text += "Finished!";
             }
