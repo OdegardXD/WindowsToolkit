@@ -48,3 +48,7 @@ dotnet build
 ```
 
 The project targets `net10.0-windows` and uses Windows Forms.
+
+## About Development
+
+Yes, AI has been used in this project. I'm not an experienced coder — I write the code myself, and lean on AI for help when I get stuck. Documentation like this README is also AI-assisted.
