@@ -17,10 +17,8 @@ namespace WindowsToolkit
 
 
         // todo:
-        // fix delete if statement
         // fix exit if error occured because i dont think it actually exits now. im unsure
         // fix help button not doing anything
-        // add the path for the temp file directories 
 
 
         private static class GlobalVariables
