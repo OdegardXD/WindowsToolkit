@@ -14,7 +14,6 @@ namespace WindowsToolkit
         // future ideas?
         // add a windows update cleanup. might be a bad idea due to it fucking with windows update
         // icon cache cleanup?
-        // Reorder commands. DISM fixes component store that SFC /scannow uses so best to run that first if user wants to run that
         // implement version checker. stores current github commit version and compares against github
 
 
@@ -130,46 +129,6 @@ namespace WindowsToolkit
                     LogBox.Text += "Done Deleting Temp Files.\n";
                 }
 
-                // -- sfc --
-
-                if (SFCCheckBox.Checked)
-                {
-                    // log about starting command
-                    LogBox.Text += "Starting 'sfc /scannow'\n";
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = "sfc.exe",
-                            Arguments = "/scannow",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true
-                        };
-
-                        Process sfcProcess = new Process();
-                        sfcProcess.StartInfo = startInfo;
-
-                        sfcProcess.OutputDataReceived += (sender1, e1) =>
-                        {
-                            if (e1.Data != null)
-                            {
-                                LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
-                            }
-                        };
-
-                        sfcProcess.Start();
-                        sfcProcess.BeginOutputReadLine();
-                        await sfcProcess.WaitForExitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogBox.Invoke(() => LogBox.Text += "SFC failed to run: " + ex.Message + "\n");
-                        return;
-                    }
-                }
-
                 // -- dism --
 
                 if (DISMCheckBox.Checked)
@@ -206,6 +165,46 @@ namespace WindowsToolkit
                     catch (Exception ex)
                     {
                         LogBox.Invoke(() => LogBox.Text += "DISM failed to run: " + ex.Message + "\n");
+                        return;
+                    }
+                }
+                
+                // -- sfc --
+
+                if (SFCCheckBox.Checked)
+                {
+                    // log about starting command
+                    LogBox.Text += "Starting 'sfc /scannow'\n";
+                    try
+                    {
+                        // declare the variable and build the object
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = "sfc.exe",
+                            Arguments = "/scannow",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true
+                        };
+
+                        Process sfcProcess = new Process();
+                        sfcProcess.StartInfo = startInfo;
+
+                        sfcProcess.OutputDataReceived += (sender1, e1) =>
+                        {
+                            if (e1.Data != null)
+                            {
+                                LogBox.Invoke(() => LogBox.Text += e1.Data + "\n");
+                            }
+                        };
+
+                        sfcProcess.Start();
+                        sfcProcess.BeginOutputReadLine();
+                        await sfcProcess.WaitForExitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogBox.Invoke(() => LogBox.Text += "SFC failed to run: " + ex.Message + "\n");
                         return;
                     }
                 }

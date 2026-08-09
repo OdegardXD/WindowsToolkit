@@ -84,7 +84,7 @@
             // DISMCheckBox
             // 
             DISMCheckBox.AutoSize = true;
-            DISMCheckBox.Location = new Point(3, 53);
+            DISMCheckBox.Location = new Point(3, 28);
             DISMCheckBox.Name = "DISMCheckBox";
             DISMCheckBox.Size = new Size(134, 19);
             DISMCheckBox.TabIndex = 3;
@@ -94,7 +94,7 @@
             // SFCCheckBox
             // 
             SFCCheckBox.AutoSize = true;
-            SFCCheckBox.Location = new Point(3, 28);
+            SFCCheckBox.Location = new Point(3, 53);
             SFCCheckBox.Name = "SFCCheckBox";
             SFCCheckBox.Size = new Size(106, 19);
             SFCCheckBox.TabIndex = 2;
