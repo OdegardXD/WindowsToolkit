@@ -16,11 +16,6 @@ namespace WindowsToolkit
         // icon cache cleanup?
         // implement version checker. stores current github commit version and compares against github
 
-
-        // todo:
-        // fix exit if error occured because i dont think it actually exits now. im unsure
-
-
         private static class GlobalVariables
         {
             public static string WindowsUsername = Environment.UserName;
@@ -53,6 +48,7 @@ namespace WindowsToolkit
                 MessageBox.Show("This program requires admin privileges! \nPlease relaunch with admin privileges. \nClick 'OK' to close program.", "Requires Admin Privileges");
                 // exit program after user clicks ok on messagebox
                 Application.Exit();
+                return;
             }
 
             else
@@ -60,6 +56,22 @@ namespace WindowsToolkit
                 LogBox.Text += "Program started.\n";
             }
             LogBox.Text += $"Got Windows Username: {GlobalVariables.WindowsUsername}\n";
+        }
+
+        //
+        // CHKDSK Restart Warn
+        //
+
+        private void CHKDSK_Restart_warn(object sender, EventArgs e)
+        {
+            if (CheckDiskCheckBox.Checked) 
+            {
+                DialogResult result = MessageBox.Show("Warning! CHKDSK requires a full PC restart. Press no to unselect, yes to proceed.", "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (result == DialogResult.No)
+                {
+                    CheckDiskCheckBox.Checked = false;
+                }
+            }
         }
 
         //
@@ -256,6 +268,10 @@ namespace WindowsToolkit
                 LogBox.Text += "Finished!";
             }
         }
+
+        //
+        // Help Button
+        //
 
         private void HelpButton_Click(object sender, EventArgs e)
         {

@@ -80,6 +80,7 @@
             CheckDiskCheckBox.TabIndex = 4;
             CheckDiskCheckBox.Text = "Check Disk (REQUIRES RESTART)";
             CheckDiskCheckBox.UseVisualStyleBackColor = true;
+            CheckDiskCheckBox.CheckedChanged += CHKDSK_Restart_warn;
             // 
             // DISMCheckBox
             // 
