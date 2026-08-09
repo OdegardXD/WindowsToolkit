@@ -16,6 +16,9 @@ namespace WindowsToolkit
         // icon cache cleanup?
         // implement version checker. stores current github commit version and compares against github
 
+        // bugs:
+        // if any of the options throw an error and return;'s then it will stop which is the way its designed but IsRunning; never gets set to false. so to retry you would need to restart program...
+
         private static class GlobalVariables
         {
             public static string WindowsUsername = Environment.UserName;
@@ -80,6 +83,11 @@ namespace WindowsToolkit
 
         private async void RunButton_Click(object sender, EventArgs e)
         {
+            if (!DeleteTempFilesCheckBox.Checked && !DISMCheckBox.Checked && !SFCCheckBox.Checked && !CheckDiskCheckBox.Checked)
+            {
+                MessageBox.Show("Please select a option before trying to run...", "Error!");
+                return;
+            }
             if (GlobalVariables.isRunning)
             {
                 MessageBox.Show("Toolkit is already doing its magic! Wait u dingus!", "Error!");
