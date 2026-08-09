@@ -13,7 +13,6 @@ namespace WindowsToolkit
 
         // future ideas?
         // add a windows update cleanup. might be a bad idea due to it fucking with windows update
-        // icon cache cleanup?
         // implement version checker. stores current github commit version and compares against github
 
         // bugs:
@@ -27,6 +26,7 @@ namespace WindowsToolkit
             public static string PrefetchPath = "C:\\Windows\\Prefetch";
             public static string TempPath = "C:\\Windows\\Temp";
             public static string PercentTempPath = $"C:\\Users\\{WindowsUsername}\\AppData\\Local\\Temp";
+            public static Version? localVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         //
@@ -59,6 +59,15 @@ namespace WindowsToolkit
                 LogBox.Text += "Program started.\n";
             }
             LogBox.Text += $"Got Windows Username: {GlobalVariables.WindowsUsername}\n";
+        }
+
+        private async void VersionChecker(object sender, EventArgs e) 
+        {
+            var latest = await CheckForUpdate.GetLatestReleaseVersionAsync();
+            if (latest != null && latest > GlobalVariables.localVersion)
+            {
+                LogBox.Text += $"Update available: v{latest} (you're on v{GlobalVariables.localVersion})\n";
+            }
         }
 
         //
