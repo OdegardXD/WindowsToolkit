@@ -1,0 +1,9 @@
+idea list:
+
+make delete temp files be await so it will never freeze UI thread.
+
+windows update cache cleaner:
+stop windows update service
+clear cache
+restart service
+only scary thing with doing this is incase the program crashes or stops, the service might never come back up unless user manually starts it again.
