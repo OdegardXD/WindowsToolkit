@@ -66,7 +66,7 @@ namespace WindowsToolkit
             if (GlobalVariables.isRunning)
             {
                 var result = MessageBox.Show(
-                    "The toolkit is still running something.\nClosing now will keep the current task running but will stop any future tasks.\n Close anyway?",
+                    "The toolkit is still running something.\nClosing now will keep the current task running but will stop any future tasks.\nClose anyway?",
                     "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
 
                 if (result == DialogResult.No)
