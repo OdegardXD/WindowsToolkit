@@ -102,33 +102,6 @@ namespace WindowsToolkit
         }
 
         //
-        // Delete Files In Path
-        // runs on whatever thread calls it (background thread during Delete Temp Files) - only logs
-        // failures individually and a count when done, instead of a line per deleted file, since some
-        // of these folders can have thousands of files and logging each one is what was freezing the UI
-        //
-
-        private void DeleteFilesInPath(string path, EnumerationOptions enumOptions)
-        {
-            int deleted = 0;
-            int failed = 0;
-            foreach (var file in Directory.EnumerateFiles(path, "*", enumOptions))
-            {
-                try
-                {
-                    File.Delete(file);
-                    deleted++;
-                }
-                catch (Exception ex)
-                {
-                    failed++;
-                    LogBox.Invoke(() => AppendLog($"Failed: {file} - {ex.Message}\n"));
-                }
-            }
-            LogBox.Invoke(() => AppendLog($"Deleted {deleted} file(s), {failed} failed.\n"));
-        }
-
-        //
         // CHKDSK Restart Warn
         //
 
@@ -179,13 +152,44 @@ namespace WindowsToolkit
                     await Task.Run(() =>
                     {
                         LogBox.Invoke(() => AppendLog("1/3 - Temp\n"));
-                        DeleteFilesInPath(GlobalVariables.TempPath, enumOptions);
-
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", enumOptions))
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                                LogBox.Invoke(() => AppendLog($"Deleted: {file}\n"));
+                            }
+                            catch (Exception ex)
+                            {
+                                LogBox.Invoke(() => AppendLog($"Failed: {file} - {ex.Message}\n"));
+                            }
+                        }
                         LogBox.Invoke(() => AppendLog("2/3 - %Temp%\n"));
-                        DeleteFilesInPath(GlobalVariables.PercentTempPath, enumOptions);
-
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", enumOptions))
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                                LogBox.Invoke(() => AppendLog($"Deleted: {file}\n"));
+                            }
+                            catch (Exception ex)
+                            {
+                                LogBox.Invoke(() => AppendLog($"Failed: {file} - {ex.Message}\n"));
+                            }
+                        }
                         LogBox.Invoke(() => AppendLog("3/3 - Prefetch\n"));
-                        DeleteFilesInPath(GlobalVariables.PrefetchPath, enumOptions);
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", enumOptions))
+                        {
+                            try
+                            {
+                                File.Delete(file);
+                                LogBox.Invoke(() => AppendLog($"Deleted: {file}\n"));
+                            }
+                            catch (Exception ex)
+                            {
+                                LogBox.Invoke(() => AppendLog($"Failed: {file} - {ex.Message}\n"));
+                            }
+                        }
                     });
                     AppendLog("Done Deleting Temp Files.\n");
                 }
