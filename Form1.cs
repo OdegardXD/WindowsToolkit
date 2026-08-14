@@ -102,33 +102,6 @@ namespace WindowsToolkit
         }
 
         //
-        // Delete Files In Path
-        // runs on whatever thread calls it (background thread during Delete Temp Files) - only logs
-        // failures individually and a count when done, instead of a line per deleted file, since some
-        // of these folders can have thousands of files and logging each one is what was freezing the UI
-        //
-
-        private void DeleteFilesInPath(string path, EnumerationOptions enumOptions)
-        {
-            int deleted = 0;
-            int failed = 0;
-            foreach (var file in Directory.EnumerateFiles(path, "*", enumOptions))
-            {
-                try
-                {
-                    File.Delete(file);
-                    deleted++;
-                }
-                catch (Exception ex)
-                {
-                    failed++;
-                    LogBox.Invoke(() => AppendLog($"Failed: {file} - {ex.Message}\n"));
-                }
-            }
-            LogBox.Invoke(() => AppendLog($"Deleted {deleted} file(s), {failed} failed.\n"));
-        }
-
-        //
         // CHKDSK Restart Warn
         //
 
@@ -165,248 +138,276 @@ namespace WindowsToolkit
                 try
                 {
 
-                // -- delete temp files --
+                    // -- delete temp files --
 
-                if (DeleteTempFilesCheckBox.Checked) // runs on a background thread since folders like Temp can have thousands of files - doing it on the UI thread freezes the window
-                {
-                    var enumOptions = new EnumerationOptions
+                    if (DeleteTempFilesCheckBox.Checked) // note: all of this is AI slop. i got lazy okay? anyway its simple code. just a foreach block that loops through and catches errors
                     {
-                        RecurseSubdirectories = true,
-                        IgnoreInaccessible = true
-                    };
-
-                    AppendLog("Started deleting temp files...\n");
-                    await Task.Run(() =>
-                    {
-                        LogBox.Invoke(() => AppendLog("1/3 - Temp\n"));
-                        DeleteFilesInPath(GlobalVariables.TempPath, enumOptions);
-
-                        LogBox.Invoke(() => AppendLog("2/3 - %Temp%\n"));
-                        DeleteFilesInPath(GlobalVariables.PercentTempPath, enumOptions);
-
-                        LogBox.Invoke(() => AppendLog("3/3 - Prefetch\n"));
-                        DeleteFilesInPath(GlobalVariables.PrefetchPath, enumOptions);
-                    });
-                    AppendLog("Done Deleting Temp Files.\n");
-                }
-
-                // -- clear recycle bin --
-
-                if (ClearRecycleBinCheckBox.Checked) 
-                {
-                    AppendLog("Clearing Recycle Bin...\n");
-                    [DllImport("Shell32.dll")]
-                    static extern int SHEmptyRecycleBin(IntPtr hwnd, string? pszRootPath, uint dwFlags);
-
-                    SHEmptyRecycleBin(IntPtr.Zero, null, 7);
-                    AppendLog("Finished Clearing Recycle Bin!\n");
-                }
-
-                // -- dism restore health --
-
-                if (DISMCheckBox.Checked)
-                {
-                    // log about starting command
-                    AppendLog("Starting 'DISM Restore Health'\n");
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        var enumOptions = new EnumerationOptions
                         {
-                            FileName = "dism.exe",
-                            Arguments = "/Online /Cleanup-Image /RestoreHealth",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true
+                            RecurseSubdirectories = true,
+                            IgnoreInaccessible = true
                         };
 
-                        Process DISMProcess = new Process();
-                        DISMProcess.StartInfo = startInfo;
-
-                        DISMProcess.OutputDataReceived += (sender1, e1) =>
+                        AppendLog("Started deleting temp files...\n");
+                        AppendLog("1/3 - Temp\n");
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.TempPath, "*", enumOptions))
                         {
-                            if (e1.Data != null)
+                            try
                             {
-                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                File.Delete(file);
+                                AppendLog($"Deleted: {file}\n");
                             }
-                        };
-
-                        DISMProcess.Start();
-                        DISMProcess.BeginOutputReadLine();
-                        await DISMProcess.WaitForExitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
-                        return;
-                    }
-                }
-
-                // -- sfc --
-
-                if (SFCCheckBox.Checked)
-                {
-                    // log about starting command
-                    AppendLog("Starting 'sfc /scannow'\n");
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = "sfc.exe",
-                            Arguments = "/scannow",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true,
-                            StandardOutputEncoding = System.Text.Encoding.Unicode
-                        };
-
-                        Process sfcProcess = new Process();
-                        sfcProcess.StartInfo = startInfo;
-
-                        sfcProcess.OutputDataReceived += (sender1, e1) =>
-                        {
-                            if (e1.Data != null)
+                            catch (Exception ex)
                             {
-                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                AppendLog($"Failed: {file} - {ex.Message}\n");
                             }
-                        };
-
-                        sfcProcess.Start();
-                        sfcProcess.BeginOutputReadLine();
-                        await sfcProcess.WaitForExitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogBox.Invoke(() => AppendLog("SFC failed to run: " + ex.Message + "\n"));
-                        return;
-                    }
-                }
-
-                // -- dism cleanup --
-
-                if (DISMCleanupCheckBox.Checked)
-                {
-                    // log about starting command
-                    AppendLog("Starting 'DISM Cleanup'\n");
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        }
+                        AppendLog("2/3 - %Temp%\n");
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.PercentTempPath, "*", enumOptions))
                         {
-                            FileName = "dism.exe",
-                            Arguments = "/Online /Cleanup-Image /StartComponentCleanup",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true
-                        };
-
-                        Process DISMCleanupProcess = new Process();
-                        DISMCleanupProcess.StartInfo = startInfo;
-
-                        DISMCleanupProcess.OutputDataReceived += (sender1, e1) =>
-                        {
-                            if (e1.Data != null)
+                            try
                             {
-                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                File.Delete(file);
+                                AppendLog($"Deleted: {file}\n");
                             }
-                        };
-
-                        DISMCleanupProcess.Start();
-                        DISMCleanupProcess.BeginOutputReadLine();
-                        await DISMCleanupProcess.WaitForExitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
-                        return;
-                    }
-                }
-
-                // -- chkdsk --
-
-                if (CheckDiskCheckBox.Checked) // chkdsk requires interaction. has a "writeline" line that sends "Y" to confirm to do chkdsk at restart
-                {
-                    // log about starting command
-                    AppendLog("Starting 'CHKDSK'\n");
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
-                        {
-                            FileName = "chkdsk.exe",
-                            Arguments = "C: /f",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true,
-                            RedirectStandardInput = true // this is also new. needed to send input
-                        };
-
-                        Process chkdskProcess = new Process();
-                        chkdskProcess.StartInfo = startInfo;
-
-                        chkdskProcess.OutputDataReceived += (sender1, e1) =>
-                        {
-                            if (e1.Data != null)
+                            catch (Exception ex)
                             {
-                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                AppendLog($"Failed: {file} - {ex.Message}\n");
                             }
-                        };
-
-                        chkdskProcess.Start();
-                        chkdskProcess.BeginOutputReadLine();
-
-                        chkdskProcess.StandardInput.WriteLine("Y");
-                        await chkdskProcess.WaitForExitAsync();
-                    }
-                    catch (Exception ex)
-                    {
-                        LogBox.Invoke(() => AppendLog("CHKDSK failed to run: " + ex.Message + "\n"));
-                        return;
-                    }
-                }
-
-                // -- flush dns --
-
-                if (FlushDNSCheckBox.Checked)
-                {
-                    // log about starting command
-                    AppendLog("Starting Flush DNS\n");
-                    try
-                    {
-                        // declare the variable and build the object
-                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        }
+                        AppendLog("3/3 - Prefetch\n");
+                        foreach (var file in Directory.EnumerateFiles(GlobalVariables.PrefetchPath, "*", enumOptions))
                         {
-                            FileName = "ipconfig.exe",
-                            Arguments = "/flushdns",
-                            UseShellExecute = false,
-                            CreateNoWindow = true,
-                            RedirectStandardOutput = true
-                        };
-
-                        Process FlushDNSProcess = new Process();
-                        FlushDNSProcess.StartInfo = startInfo;
-
-                        FlushDNSProcess.OutputDataReceived += (sender1, e1) =>
-                        {
-                            if (e1.Data != null)
+                            try
                             {
-                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                File.Delete(file);
+                                AppendLog($"Deleted: {file}\n");
                             }
-                        };
-
-                        FlushDNSProcess.Start();
-                        FlushDNSProcess.BeginOutputReadLine();
-                        await FlushDNSProcess.WaitForExitAsync();
+                            catch (Exception ex)
+                            {
+                                AppendLog($"Failed: {file} - {ex.Message}\n");
+                            }
+                        }
+                        AppendLog("Done Deleting Temp Files.\n");
                     }
-                    catch (Exception ex)
+
+                    // -- clear recycle bin --
+
+                    if (ClearRecycleBinCheckBox.Checked)
                     {
-                        LogBox.Invoke(() => AppendLog("Flush DNS failed to run: " + ex.Message + "\n"));
-                        return;
-                    }
-                }
+                        AppendLog("Clearing Recycle Bin...\n");
+                        [DllImport("Shell32.dll")]
+                        static extern int SHEmptyRecycleBin(IntPtr hwnd, string? pszRootPath, uint dwFlags);
 
-                AppendLog("Finished!\n");
+                        SHEmptyRecycleBin(IntPtr.Zero, null, 7);
+                        AppendLog("Finished Clearing Recycle Bin!\n");
+                    }
+
+                    // -- dism restore health --
+
+                    if (DISMCheckBox.Checked)
+                    {
+                        // log about starting command
+                        AppendLog("Starting 'DISM Restore Health'\n");
+                        try
+                        {
+                            // declare the variable and build the object
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = "dism.exe",
+                                Arguments = "/Online /Cleanup-Image /RestoreHealth",
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true
+                            };
+
+                            Process DISMProcess = new Process();
+                            DISMProcess.StartInfo = startInfo;
+
+                            DISMProcess.OutputDataReceived += (sender1, e1) =>
+                            {
+                                if (e1.Data != null)
+                                {
+                                    LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                }
+                            };
+
+                            DISMProcess.Start();
+                            DISMProcess.BeginOutputReadLine();
+                            await DISMProcess.WaitForExitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
+                            return;
+                        }
+                    }
+
+                    // -- sfc --
+
+                    if (SFCCheckBox.Checked)
+                    {
+                        // log about starting command
+                        AppendLog("Starting 'sfc /scannow'\n");
+                        try
+                        {
+                            // declare the variable and build the object
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = "sfc.exe",
+                                Arguments = "/scannow",
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true,
+                                StandardOutputEncoding = System.Text.Encoding.Unicode
+                            };
+
+                            Process sfcProcess = new Process();
+                            sfcProcess.StartInfo = startInfo;
+
+                            sfcProcess.OutputDataReceived += (sender1, e1) =>
+                            {
+                                if (e1.Data != null)
+                                {
+                                    LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                }
+                            };
+
+                            sfcProcess.Start();
+                            sfcProcess.BeginOutputReadLine();
+                            await sfcProcess.WaitForExitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Invoke(() => AppendLog("SFC failed to run: " + ex.Message + "\n"));
+                            return;
+                        }
+                    }
+
+                    // -- dism cleanup --
+
+                    if (DISMCleanupCheckBox.Checked)
+                    {
+                        // log about starting command
+                        AppendLog("Starting 'DISM Cleanup'\n");
+                        try
+                        {
+                            // declare the variable and build the object
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = "dism.exe",
+                                Arguments = "/Online /Cleanup-Image /StartComponentCleanup",
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true
+                            };
+
+                            Process DISMCleanupProcess = new Process();
+                            DISMCleanupProcess.StartInfo = startInfo;
+
+                            DISMCleanupProcess.OutputDataReceived += (sender1, e1) =>
+                            {
+                                if (e1.Data != null)
+                                {
+                                    LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                }
+                            };
+
+                            DISMCleanupProcess.Start();
+                            DISMCleanupProcess.BeginOutputReadLine();
+                            await DISMCleanupProcess.WaitForExitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Invoke(() => AppendLog("DISM failed to run: " + ex.Message + "\n"));
+                            return;
+                        }
+                    }
+
+                    // -- chkdsk --
+
+                    if (CheckDiskCheckBox.Checked) // chkdsk requires interaction. has a "writeline" line that sends "Y" to confirm to do chkdsk at restart
+                    {
+                        // log about starting command
+                        AppendLog("Starting 'CHKDSK'\n");
+                        try
+                        {
+                            // declare the variable and build the object
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = "chkdsk.exe",
+                                Arguments = "C: /f",
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true,
+                                RedirectStandardInput = true // this is also new. needed to send input
+                            };
+
+                            Process chkdskProcess = new Process();
+                            chkdskProcess.StartInfo = startInfo;
+
+                            chkdskProcess.OutputDataReceived += (sender1, e1) =>
+                            {
+                                if (e1.Data != null)
+                                {
+                                    LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                }
+                            };
+
+                            chkdskProcess.Start();
+                            chkdskProcess.BeginOutputReadLine();
+
+                            chkdskProcess.StandardInput.WriteLine("Y");
+                            await chkdskProcess.WaitForExitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Invoke(() => AppendLog("CHKDSK failed to run: " + ex.Message + "\n"));
+                            return;
+                        }
+                    }
+
+                    // -- flush dns --
+
+                    if (FlushDNSCheckBox.Checked)
+                    {
+                        // log about starting command
+                        AppendLog("Starting Flush DNS\n");
+                        try
+                        {
+                            // declare the variable and build the object
+                            ProcessStartInfo startInfo = new ProcessStartInfo
+                            {
+                                FileName = "ipconfig.exe",
+                                Arguments = "/flushdns",
+                                UseShellExecute = false,
+                                CreateNoWindow = true,
+                                RedirectStandardOutput = true
+                            };
+
+                            Process FlushDNSProcess = new Process();
+                            FlushDNSProcess.StartInfo = startInfo;
+
+                            FlushDNSProcess.OutputDataReceived += (sender1, e1) =>
+                            {
+                                if (e1.Data != null)
+                                {
+                                    LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                                }
+                            };
+
+                            FlushDNSProcess.Start();
+                            FlushDNSProcess.BeginOutputReadLine();
+                            await FlushDNSProcess.WaitForExitAsync();
+                        }
+                        catch (Exception ex)
+                        {
+                            LogBox.Invoke(() => AppendLog("Flush DNS failed to run: " + ex.Message + "\n"));
+                            return;
+                        }
+                    }
+
+                    AppendLog("Finished!\n");
                 }
                 finally
                 {
