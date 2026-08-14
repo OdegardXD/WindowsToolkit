@@ -7,3 +7,5 @@ stop windows update service
 clear cache
 restart service
 only scary thing with doing this is incase the program crashes or stops, the service might never come back up unless user manually starts it again.
+
+search indexing toggle?? (this doesnt seem that useful, allthough the programs main goal is to be a "toolkit" so why not)
