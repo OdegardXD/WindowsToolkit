@@ -116,6 +116,8 @@ namespace WindowsToolkit
             else
             {
                 GlobalVariables.isRunning = true;
+                try
+                {
 
                 // -- delete temp files --
 
@@ -386,8 +388,12 @@ namespace WindowsToolkit
                     }
                 }
 
-                GlobalVariables.isRunning = false;
                 AppendLog("Finished!\n");
+                }
+                finally
+                {
+                    GlobalVariables.isRunning = false;
+                }
             }
         }
 
