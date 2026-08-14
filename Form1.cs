@@ -58,6 +58,25 @@ namespace WindowsToolkit
         }
 
         //
+        // FormClosing event - ask for confirmation if IsRunning is true when X has been clicked
+        //
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            if (GlobalVariables.isRunning)
+            {
+                var result = MessageBox.Show(
+                    "The toolkit is still running something.\nClosing now will keep the current task running but will stop any future tasks.\n Close anyway?",
+                    "Warning", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
+                if (result == DialogResult.No)
+                {
+                    e.Cancel = true;
+                }
+            }
+        }
+
+        //
         // VersionChecker
         //
 

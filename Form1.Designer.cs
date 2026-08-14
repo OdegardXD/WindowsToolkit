@@ -30,6 +30,10 @@
         {
             LogBox = new RichTextBox();
             panel1 = new Panel();
+            FlushDNSCheckBox = new CheckBox();
+            UILabel3 = new Label();
+            UILabel2 = new Label();
+            UILabel1 = new Label();
             ClearRecycleBinCheckBox = new CheckBox();
             ClearLogBox = new Button();
             DISMCleanupCheckBox = new CheckBox();
@@ -39,10 +43,6 @@
             SFCCheckBox = new CheckBox();
             DeleteTempFilesCheckBox = new CheckBox();
             RunButton = new Button();
-            UILabel1 = new Label();
-            UILabel2 = new Label();
-            UILabel3 = new Label();
-            FlushDNSCheckBox = new CheckBox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -77,6 +77,43 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(285, 426);
             panel1.TabIndex = 1;
+            // 
+            // FlushDNSCheckBox
+            // 
+            FlushDNSCheckBox.AutoSize = true;
+            FlushDNSCheckBox.Location = new Point(3, 200);
+            FlushDNSCheckBox.Name = "FlushDNSCheckBox";
+            FlushDNSCheckBox.Size = new Size(80, 19);
+            FlushDNSCheckBox.TabIndex = 12;
+            FlushDNSCheckBox.Text = "Flush DNS";
+            FlushDNSCheckBox.UseVisualStyleBackColor = true;
+            // 
+            // UILabel3
+            // 
+            UILabel3.AutoSize = true;
+            UILabel3.Location = new Point(3, 182);
+            UILabel3.Name = "UILabel3";
+            UILabel3.Size = new Size(95, 15);
+            UILabel3.TabIndex = 11;
+            UILabel3.Text = "-- Networking --";
+            // 
+            // UILabel2
+            // 
+            UILabel2.AutoSize = true;
+            UILabel2.Location = new Point(3, 67);
+            UILabel2.Name = "UILabel2";
+            UILabel2.Size = new Size(157, 15);
+            UILabel2.TabIndex = 10;
+            UILabel2.Text = "-- Builit-In Windows Tools --";
+            // 
+            // UILabel1
+            // 
+            UILabel1.AutoSize = true;
+            UILabel1.Location = new Point(3, 2);
+            UILabel1.Name = "UILabel1";
+            UILabel1.Size = new Size(92, 15);
+            UILabel1.TabIndex = 9;
+            UILabel1.Text = "-- File System --";
             // 
             // ClearRecycleBinCheckBox
             // 
@@ -169,43 +206,6 @@
             RunButton.UseVisualStyleBackColor = true;
             RunButton.Click += RunButton_Click;
             // 
-            // UILabel1
-            // 
-            UILabel1.AutoSize = true;
-            UILabel1.Location = new Point(3, 2);
-            UILabel1.Name = "UILabel1";
-            UILabel1.Size = new Size(92, 15);
-            UILabel1.TabIndex = 9;
-            UILabel1.Text = "-- File System --";
-            // 
-            // UILabel2
-            // 
-            UILabel2.AutoSize = true;
-            UILabel2.Location = new Point(3, 67);
-            UILabel2.Name = "UILabel2";
-            UILabel2.Size = new Size(157, 15);
-            UILabel2.TabIndex = 10;
-            UILabel2.Text = "-- Builit-In Windows Tools --";
-            // 
-            // UILabel3
-            // 
-            UILabel3.AutoSize = true;
-            UILabel3.Location = new Point(3, 182);
-            UILabel3.Name = "UILabel3";
-            UILabel3.Size = new Size(95, 15);
-            UILabel3.TabIndex = 11;
-            UILabel3.Text = "-- Networking --";
-            // 
-            // FlushDNSCheckBox
-            // 
-            FlushDNSCheckBox.AutoSize = true;
-            FlushDNSCheckBox.Location = new Point(3, 200);
-            FlushDNSCheckBox.Name = "FlushDNSCheckBox";
-            FlushDNSCheckBox.Size = new Size(80, 19);
-            FlushDNSCheckBox.TabIndex = 12;
-            FlushDNSCheckBox.Text = "Flush DNS";
-            FlushDNSCheckBox.UseVisualStyleBackColor = true;
-            // 
             // MainForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -218,6 +218,7 @@
             Name = "MainForm";
             ShowIcon = false;
             Text = "WindowsToolkit";
+            FormClosing += MainForm_FormClosing;
             Load += Form1_Load;
             panel1.ResumeLayout(false);
             panel1.PerformLayout();
