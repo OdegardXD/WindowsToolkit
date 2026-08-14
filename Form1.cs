@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.Net.NetworkInformation;
 using System.Security.Principal;
+using System.Runtime.InteropServices;
+using System.Linq.Expressions;
 
 namespace WindowsToolkit
 {
@@ -102,7 +104,7 @@ namespace WindowsToolkit
 
         private async void RunButton_Click(object sender, EventArgs e)
         {
-            if (!DeleteTempFilesCheckBox.Checked && !DISMCheckBox.Checked && !SFCCheckBox.Checked && !DISMCleanupCheckBox.Checked && !CheckDiskCheckBox.Checked)
+            if (!DeleteTempFilesCheckBox.Checked && !ClearRecycleBinCheckBox.Checked && !DISMCheckBox.Checked && !SFCCheckBox.Checked && !DISMCleanupCheckBox.Checked && !CheckDiskCheckBox.Checked && !FlushDNSCheckBox.Checked)
             {
                 MessageBox.Show("Please select a option before trying to run...", "Error!");
                 return;
@@ -166,6 +168,18 @@ namespace WindowsToolkit
                         }
                     }
                     AppendLog("Done Deleting Temp Files.\n");
+                }
+
+                // -- clear recycle bin --
+
+                if (ClearRecycleBinCheckBox.Checked) 
+                {
+                    AppendLog("Clearing Recycle Bin...\n");
+                    [DllImport("Shell32.dll")]
+                    static extern int SHEmptyRecycleBin(IntPtr hwnd, string? pszRootPath, uint dwFlags);
+
+                    SHEmptyRecycleBin(IntPtr.Zero, null, 7);
+                    AppendLog("Finished Clearing Recycle Bin!\n");
                 }
 
                 // -- dism restore health --
@@ -332,6 +346,46 @@ namespace WindowsToolkit
                     }
                 }
 
+                // -- flush dns --
+
+                if (FlushDNSCheckBox.Checked)
+                {
+                    // log about starting command
+                    AppendLog("Starting Flush DNS\n");
+                    try
+                    {
+                        // declare the variable and build the object
+                        ProcessStartInfo startInfo = new ProcessStartInfo
+                        {
+                            FileName = "ipconfig.exe",
+                            Arguments = "/flushdns",
+                            UseShellExecute = false,
+                            CreateNoWindow = true,
+                            RedirectStandardOutput = true
+                        };
+
+                        Process FlushDNSProcess = new Process();
+                        FlushDNSProcess.StartInfo = startInfo;
+
+                        FlushDNSProcess.OutputDataReceived += (sender1, e1) =>
+                        {
+                            if (e1.Data != null)
+                            {
+                                LogBox.Invoke(() => AppendLog(e1.Data + "\n"));
+                            }
+                        };
+
+                        FlushDNSProcess.Start();
+                        FlushDNSProcess.BeginOutputReadLine();
+                        await FlushDNSProcess.WaitForExitAsync();
+                    }
+                    catch (Exception ex)
+                    {
+                        LogBox.Invoke(() => AppendLog("Flush DNS failed to run: " + ex.Message + "\n"));
+                        return;
+                    }
+                }
+
                 GlobalVariables.isRunning = false;
                 AppendLog("Finished!\n");
             }
@@ -344,11 +398,13 @@ namespace WindowsToolkit
         private void HelpButton_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Windows Toolkit, Made by OdegardXD\n\n" +
-                "Delete Temp Files - Deletes some unnecessary leftover files.\nSpecifically the folders are 'Temp', '%Temp%' and 'Prefetch'\nPrograms use these folders to dump temporary files and its not always that they delete them so the folders can take up space over time.\n\n" +
+                "Delete Temp Files\nDeletes some unnecessary leftover files. Specifically the folders are 'Temp', '%Temp%' and 'Prefetch' Programs use these folders to dump temporary files and its not always that they delete them so the folders can take up space over time.\n\n" +
+                "Clear Recycle Bin\nEmpties your recycle bin.\n\n" +
                 "DISM Restore Health\nDISM repairs the underlying Windows System image itself.\n\n" +
                 "sfc /scannow\nThis is a built in Windows tool that scans all Windows system files and compares them against a known good copy to check if any are broken/corrupted and then replaces them if they are.\n\n" +
                 "DISM Component Cleanup\nRemoves old, superseded versions of system components that pile up in the component store after Windows updates, freeing up space without touching anything currently in use.\n\n" +
-                "CHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure", "Help - Windows Toolkit");
+                "CHKDSK\nCHKDSK scans your storage drive for issues. Issues like damage to the drive itself and the file system structure\n\n" +
+                "Flush DNS\nClears your DNS cache. Can help if internet things arent connecting.", "Help - Windows Toolkit");
         }
 
         //

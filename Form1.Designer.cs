@@ -30,6 +30,7 @@
         {
             LogBox = new RichTextBox();
             panel1 = new Panel();
+            ClearRecycleBinCheckBox = new CheckBox();
             ClearLogBox = new Button();
             DISMCleanupCheckBox = new CheckBox();
             HelpButton = new Button();
@@ -38,6 +39,10 @@
             SFCCheckBox = new CheckBox();
             DeleteTempFilesCheckBox = new CheckBox();
             RunButton = new Button();
+            UILabel1 = new Label();
+            UILabel2 = new Label();
+            UILabel3 = new Label();
+            FlushDNSCheckBox = new CheckBox();
             panel1.SuspendLayout();
             SuspendLayout();
             // 
@@ -55,6 +60,11 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Controls.Add(FlushDNSCheckBox);
+            panel1.Controls.Add(UILabel3);
+            panel1.Controls.Add(UILabel2);
+            panel1.Controls.Add(UILabel1);
+            panel1.Controls.Add(ClearRecycleBinCheckBox);
             panel1.Controls.Add(ClearLogBox);
             panel1.Controls.Add(DISMCleanupCheckBox);
             panel1.Controls.Add(HelpButton);
@@ -67,6 +77,16 @@
             panel1.Name = "panel1";
             panel1.Size = new Size(285, 426);
             panel1.TabIndex = 1;
+            // 
+            // ClearRecycleBinCheckBox
+            // 
+            ClearRecycleBinCheckBox.AutoSize = true;
+            ClearRecycleBinCheckBox.Location = new Point(3, 45);
+            ClearRecycleBinCheckBox.Name = "ClearRecycleBinCheckBox";
+            ClearRecycleBinCheckBox.Size = new Size(116, 19);
+            ClearRecycleBinCheckBox.TabIndex = 8;
+            ClearRecycleBinCheckBox.Text = "Clear Recycle Bin";
+            ClearRecycleBinCheckBox.UseVisualStyleBackColor = true;
             // 
             // ClearLogBox
             // 
@@ -81,7 +101,7 @@
             // DISMCleanupCheckBox
             // 
             DISMCleanupCheckBox.AutoSize = true;
-            DISMCleanupCheckBox.Location = new Point(3, 78);
+            DISMCleanupCheckBox.Location = new Point(3, 135);
             DISMCleanupCheckBox.Name = "DISMCleanupCheckBox";
             DISMCleanupCheckBox.Size = new Size(168, 19);
             DISMCleanupCheckBox.TabIndex = 6;
@@ -101,7 +121,7 @@
             // CheckDiskCheckBox
             // 
             CheckDiskCheckBox.AutoSize = true;
-            CheckDiskCheckBox.Location = new Point(3, 103);
+            CheckDiskCheckBox.Location = new Point(3, 160);
             CheckDiskCheckBox.Name = "CheckDiskCheckBox";
             CheckDiskCheckBox.Size = new Size(194, 19);
             CheckDiskCheckBox.TabIndex = 4;
@@ -112,7 +132,7 @@
             // DISMCheckBox
             // 
             DISMCheckBox.AutoSize = true;
-            DISMCheckBox.Location = new Point(3, 28);
+            DISMCheckBox.Location = new Point(3, 85);
             DISMCheckBox.Name = "DISMCheckBox";
             DISMCheckBox.Size = new Size(134, 19);
             DISMCheckBox.TabIndex = 3;
@@ -122,7 +142,7 @@
             // SFCCheckBox
             // 
             SFCCheckBox.AutoSize = true;
-            SFCCheckBox.Location = new Point(3, 53);
+            SFCCheckBox.Location = new Point(3, 110);
             SFCCheckBox.Name = "SFCCheckBox";
             SFCCheckBox.Size = new Size(106, 19);
             SFCCheckBox.TabIndex = 2;
@@ -132,7 +152,7 @@
             // DeleteTempFilesCheckBox
             // 
             DeleteTempFilesCheckBox.AutoSize = true;
-            DeleteTempFilesCheckBox.Location = new Point(3, 3);
+            DeleteTempFilesCheckBox.Location = new Point(3, 20);
             DeleteTempFilesCheckBox.Name = "DeleteTempFilesCheckBox";
             DeleteTempFilesCheckBox.Size = new Size(117, 19);
             DeleteTempFilesCheckBox.TabIndex = 1;
@@ -148,6 +168,43 @@
             RunButton.Text = "Run";
             RunButton.UseVisualStyleBackColor = true;
             RunButton.Click += RunButton_Click;
+            // 
+            // UILabel1
+            // 
+            UILabel1.AutoSize = true;
+            UILabel1.Location = new Point(3, 2);
+            UILabel1.Name = "UILabel1";
+            UILabel1.Size = new Size(92, 15);
+            UILabel1.TabIndex = 9;
+            UILabel1.Text = "-- File System --";
+            // 
+            // UILabel2
+            // 
+            UILabel2.AutoSize = true;
+            UILabel2.Location = new Point(3, 67);
+            UILabel2.Name = "UILabel2";
+            UILabel2.Size = new Size(157, 15);
+            UILabel2.TabIndex = 10;
+            UILabel2.Text = "-- Builit-In Windows Tools --";
+            // 
+            // UILabel3
+            // 
+            UILabel3.AutoSize = true;
+            UILabel3.Location = new Point(3, 182);
+            UILabel3.Name = "UILabel3";
+            UILabel3.Size = new Size(95, 15);
+            UILabel3.TabIndex = 11;
+            UILabel3.Text = "-- Networking --";
+            // 
+            // FlushDNSCheckBox
+            // 
+            FlushDNSCheckBox.AutoSize = true;
+            FlushDNSCheckBox.Location = new Point(3, 200);
+            FlushDNSCheckBox.Name = "FlushDNSCheckBox";
+            FlushDNSCheckBox.Size = new Size(80, 19);
+            FlushDNSCheckBox.TabIndex = 12;
+            FlushDNSCheckBox.Text = "Flush DNS";
+            FlushDNSCheckBox.UseVisualStyleBackColor = true;
             // 
             // MainForm
             // 
@@ -179,5 +236,10 @@
         private Button RunButton;
         private CheckBox DISMCleanupCheckBox;
         private Button ClearLogBox;
+        private CheckBox ClearRecycleBinCheckBox;
+        private Label UILabel3;
+        private Label UILabel2;
+        private Label UILabel1;
+        private CheckBox FlushDNSCheckBox;
     }
 }
