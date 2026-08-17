@@ -235,6 +235,7 @@ namespace WindowsToolkit
                             DISMProcess.Start();
                             DISMProcess.BeginOutputReadLine();
                             await DISMProcess.WaitForExitAsync();
+                            AppendLog("DISM Is Done...");
                         }
                         catch (Exception ex)
                         {
@@ -276,6 +277,8 @@ namespace WindowsToolkit
                             sfcProcess.Start();
                             sfcProcess.BeginOutputReadLine();
                             await sfcProcess.WaitForExitAsync();
+
+                            AppendLog("SFC Is Done...");
                         }
                         catch (Exception ex)
                         {
@@ -316,6 +319,8 @@ namespace WindowsToolkit
                             DISMCleanupProcess.Start();
                             DISMCleanupProcess.BeginOutputReadLine();
                             await DISMCleanupProcess.WaitForExitAsync();
+
+                            AppendLog("DISM Cleanup Is Done...");
                         }
                         catch (Exception ex)
                         {
@@ -359,6 +364,8 @@ namespace WindowsToolkit
 
                             chkdskProcess.StandardInput.WriteLine("Y");
                             await chkdskProcess.WaitForExitAsync();
+
+                            AppendLog("CHKDSK Is Done...");
                         }
                         catch (Exception ex)
                         {
@@ -399,6 +406,8 @@ namespace WindowsToolkit
                             FlushDNSProcess.Start();
                             FlushDNSProcess.BeginOutputReadLine();
                             await FlushDNSProcess.WaitForExitAsync();
+
+                            AppendLog("Flush DNS Is Done...");
                         }
                         catch (Exception ex)
                         {
