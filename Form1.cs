@@ -278,7 +278,7 @@ namespace WindowsToolkit
                             sfcProcess.BeginOutputReadLine();
                             await sfcProcess.WaitForExitAsync();
 
-                            AppendLog("SFC Is Done...");
+                            AppendLog("SFC Is Done...\n");
                         }
                         catch (Exception ex)
                         {
